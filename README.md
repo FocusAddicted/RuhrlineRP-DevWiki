@@ -98,3 +98,119 @@ Neu integriert:
 `tools/vendor-all-fivem-assets.ps1` spiegelt Cfx-UI-Bildassets lokal.
 Die GTA-Modellpreviews für Peds, Vehicles, Objects und Weapons werden weiterhin mit
 `tools/rl-preview-generator` aus dem tatsächlich installierten GTA/FiveM-Build gerendert.
+
+
+## v4.1 · Preview Generator Dependency Fix
+
+`rl-preview-generator` hat **keine harte `screenshot-basic`-Dependency mehr**.
+
+Dadurch startet die Resource auch dann sauber, wenn `screenshot-basic` auf dem Server nicht installiert ist.
+Beim Start prüft der Generator den Resource-State:
+
+- `screenshot-basic` läuft → Screenshot-Backend wird verwendet.
+- `screenshot-basic` fehlt → Resource bleibt gestartet, Capture-Funktionen werden deaktiviert.
+- `screenshot-basic` wird später gestartet → Backend wird automatisch neu erkannt.
+- `screenshot-basic` wird während eines Laufs gestoppt → der Renderlauf wird sauber beendet, ohne die Resource abzuschießen.
+
+Zum tatsächlichen Speichern der gerenderten GTA-Previews benötigt der aktuelle Generator weiterhin
+`screenshot-basic`, weil FXServer selbst keinen gleichwertigen serverseitigen Screenshot-Export bereitstellt.
+
+
+## v4.2 · screenshot-basic direkt enthalten
+
+Unter `tools/server-resources/` liegen jetzt beide FiveM-Resources direkt nebeneinander:
+
+```text
+tools/server-resources/
+├── screenshot-basic/
+└── rl-preview-generator/
+```
+
+`screenshot-basic` stammt aus dem offiziellen CitizenFX-Repository
+(Snapshot `5e89d4afb3e28b490344e84b5e2b5ac8cc5d9c75`) und wird unter der MIT-Lizenz
+inklusive `LICENSE` mitgeliefert.
+
+In der `server.cfg`:
+
+```cfg
+ensure screenshot-basic
+ensure rl-preview-generator
+```
+
+Die offizielle Resource nutzt die Cfx-Builder `yarn` und `webpack`, um `dist/client.js`,
+`dist/server.js` und `dist/ui.html` beim ersten Start zu erzeugen.
+
+
+## v4.3 · Preview Generator nur per Serverkonsole
+
+Der Preview-Generator startet **niemals automatisch**.
+
+Beim Start von `screenshot-basic` oder `rl-preview-generator` werden keine Screenshots aufgenommen und keine Modelle gespawnt.
+Die Resources bleiben nur idle geladen.
+
+Ein Renderlauf beginnt ausschließlich durch diesen Befehl in der **FXServer-/txAdmin-Serverkonsole**:
+
+```text
+rlpreviewgen <playerServerId>
+```
+
+Beispiel:
+
+```text
+rlpreviewgen 12
+```
+
+Nur Spieler-ID `12` erhält in diesem Lauf die Render-Events. Alle anderen verbundenen Spieler bleiben vollständig unberührt.
+
+Spieler können `rlpreviewgen` und `rlpreviewstop` **nicht** über Chat/F8 ausführen, auch nicht mit ACE-Rechten.
+
+Stoppen ausschließlich aus der Serverkonsole:
+
+```text
+rlpreviewstop
+```
+
+
+## v4.4 · Render-Client = Befehlsausführer
+
+Die Render-Client-Logik wurde korrigiert:
+
+```text
+rlpreviewgen
+```
+
+wird vom gewünschten Spieler selbst ausgeführt. Der Server verwendet automatisch die FiveM-`source`
+dieses Commands als `activePlayer`.
+
+Es gibt **keine Player-ID als Argument** mehr.
+
+Beispiel:
+
+- Spieler Alfred führt `rlpreviewgen` aus.
+- `source` dieses Spielers wird zum Render-Client.
+- Nur dieser Spieler erhält `rl-preview-generator:render`.
+- Kein anderer verbundener Spieler bekommt Render- oder Screenshot-Events.
+- Beim Resource-Start passiert weiterhin nichts.
+
+Die Serverkonsole kann `rlpreviewgen` nicht starten, weil sie keinen Client besitzt, auf dem GTA-Modelle
+gerendert werden könnten.
+
+Der aktive Render-Client kann seinen Lauf mit
+
+```text
+rlpreviewstop
+```
+
+stoppen. Die Serverkonsole darf einen laufenden Job ebenfalls mit `rlpreviewstop` abbrechen.
+
+
+## v4.5 · Scale-to-Fit für alle Previews
+
+Alle Bildvorschauen werden jetzt vollständig innerhalb ihrer Preview-Fläche dargestellt:
+
+- `object-fit: contain`
+- zentrierte Darstellung
+- kein Cropping
+- Seitenverhältnis bleibt erhalten
+
+Das gilt für Peds, Vehicles, Props, Weapons, Blips, Marker, Checkpoints, Asset Library sowie die Detailansicht.
