@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "generated": false,
+  "source": "rl-preview-generator",
+  "folders": {
+    "peds": "assets/previews/peds/",
+    "vehicles": "assets/previews/vehicles/",
+    "objects": "assets/previews/objects/",
+    "weapons": "assets/previews/weapons/"
+  }
+}

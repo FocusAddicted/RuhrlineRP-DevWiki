@@ -37,9 +37,16 @@ groups:[
   {id:'explosions',icon:'💥',label:'Explosion Types',count:'88',file:'explosionTypesCompact.json',kind:'generic'},
   {id:'camshakes',icon:'📹',label:'Cam Shakes',count:'23',file:'camShakeTypesCompact.json',kind:'generic'}
  ]},
- {title:'FiveM References',items:[
-  {id:'blips',icon:'📍',label:'Blips / Sprites',count:'Reference',external:'https://docs.fivem.net/docs/game-references/blips/'},
-  {id:'markers',icon:'🔶',label:'Markers',count:'Reference',external:'https://docs.fivem.net/docs/game-references/markers/'}
+ {title:'FiveM UI & Creator Assets',items:[
+  {id:'blips',icon:'📍',label:'Blips / Sprites',count:'966',kind:'fivem-blips',file:'https://raw.githubusercontent.com/citizenfx/fivem-docs/master/content/docs/game-references/blips.md'},
+  {id:'blipcolors',icon:'🎨',label:'Blip Colors',count:'86',kind:'blip-colors',local:true},
+  {id:'markers',icon:'🔶',label:'Markers',count:'44',kind:'fivem-markers',local:true},
+  {id:'checkpoints',icon:'⭕',label:'Checkpoints',count:'50+',kind:'fivem-checkpoints',local:true},
+  {id:'hudcolors',icon:'🌈',label:'HUD Colors',count:'Official',kind:'fivem-doc-table',doc:'hud-colors'},
+  {id:'controls',icon:'⌨️',label:'Controls',count:'342+',kind:'fivem-doc-table',doc:'controls'},
+  {id:'pickups',icon:'🎁',label:'Pickup Hashes',count:'Official',kind:'fivem-doc-table',doc:'pickup-hashes'},
+  {id:'weaponmodels',icon:'🧩',label:'Weapon Models',count:'Official',kind:'fivem-doc-table',doc:'weapon-models'},
+  {id:'assetlibrary',icon:'🗂️',label:'Asset Library',count:'Bundled + vendor',kind:'asset-library',local:true}
  ]}
 ],
 counts:[['Peds','1,109','peds'],['Vehicles','921','vehicles'],['Objects','21,631','objects'],['Scenarios','247','scenarios'],['Weapons','184','weapons'],['Animations','269,414','animations'],['IPLs','895','ipls'],['MLO Interiors','385','interiors']],
