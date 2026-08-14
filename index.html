@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#111315" />
+  <title>Ruhrline GTA Data Explorer</title>
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+  <link rel="preconnect" href="https://docs-backend.fivem.net">
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">RL</div>
+      <div><strong>GTA Data Explorer</strong><span>FiveM Creator Reference</span></div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="side-footer">
+      <button class="ghost wide" data-action="show-favorites">★ Favoriten</button>
+      <button class="ghost wide" data-action="show-creator">⌘ Creator Basket</button>
+      <small>Dark Graphite · Orange</small>
+    </div>
+  </aside>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <button class="icon-btn mobile-only" id="menuBtn" aria-label="Menü">☰</button>
+      <div class="search-wrap">
+        <span>⌕</span>
+        <input id="search" autocomplete="off" placeholder="Models, Hashes, IDs, Scenarios, Animationen …" />
+        <kbd>Ctrl K</kbd>
+      </div>
+      <button class="icon-btn" id="viewBtn" title="Ansicht wechseln">▦</button>
+      <button class="accent-btn" data-action="show-creator">Creator <span id="basketCount">0</span></button>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">GTA V · FiveM · DATA CATALOG</div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSubtitle">Durchsuchbare Creator-Referenz für GTA V und FiveM.</p>
+      </div>
+      <div class="status-pill"><span></span> GTA V v3717.0 · Online 1.72</div>
+    </section>
+
+    <section id="dashboard" class="dashboard"></section>
+
+    <section id="browser" class="browser hidden">
+      <div class="toolbar">
+        <div id="chips" class="chips"></div>
+        <div class="toolbar-right">
+          <select id="sortSelect" class="select"><option value="name">Name A–Z</option><option value="name-desc">Name Z–A</option><option value="hash">Hash/ID</option></select>
+          <span id="resultCount" class="muted"></span>
+        </div>
+      </div>
+      <div id="loadNotice" class="notice hidden"></div>
+      <div id="cards" class="cards"></div>
+      <button id="moreBtn" class="more hidden">Mehr laden</button>
+    </section>
+  </main>
+
+  <div class="drawer-backdrop" id="backdrop"></div>
+  <aside class="drawer" id="drawer">
+    <button class="drawer-close" id="drawerClose">×</button>
+    <div id="drawerBody"></div>
+  </aside>
+
+  <div id="toast" class="toast"></div>
+  <script src="js/catalog.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

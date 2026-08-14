@@ -1,0 +1,6 @@
+Ruhrline GTA Data Explorer
+
+Frontend package created for use as a GTA V / FiveM creator reference.
+External runtime data source: DurtyFree/gta-v-data-dumps.
+External preview source: FiveM Documentation CDN where available.
+No Rockstar Games asset files are bundled in this ZIP.
