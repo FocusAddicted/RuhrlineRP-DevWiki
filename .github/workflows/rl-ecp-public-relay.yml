@@ -26,7 +26,7 @@ jobs:
           set -euo pipefail
           rm -rf "$RUNNER_TEMP/rl-ecp-open-bases" tmp/rl-ecp-relay
           mkdir -p "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/stream"
-          mkdir -p "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib"
+          mkdir -p "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs"
 
           git clone --depth 1 https://github.com/Octaflick/octa_poljack.git "$RUNNER_TEMP/octa_poljack"
           cp "$RUNNER_TEMP/octa_poljack/fxmanifest.lua" "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/"
@@ -38,11 +38,7 @@ jobs:
           cp "$RUNNER_TEMP/octa_poljack/README.md" "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/"
 
           git clone --depth 1 https://github.com/OTDesigns/ot-NHS.git "$RUNNER_TEMP/ot-nhs"
-          cp "$RUNNER_TEMP/ot-nhs/nhs/fxmanifest.lua" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/"
-          cp "$RUNNER_TEMP/ot-nhs/nhs/mp_f_freemode_01_mp_f_eup.meta" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/"
-          cp "$RUNNER_TEMP/ot-nhs/nhs/stream/mp_f_freemode_01_mp_f_eup.ymt" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/stream/"
-          cp "$RUNNER_TEMP/ot-nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib/mp_f_freemode_01_mp_f_eup^jbib_000_u.ydd" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib/"
-          cp "$RUNNER_TEMP/ot-nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib/mp_f_freemode_01_mp_f_eup^jbib_diff_000_a_uni.ytd" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib/"
+          cp -a "$RUNNER_TEMP/ot-nhs/nhs" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/"
           cp "$RUNNER_TEMP/ot-nhs/LICENSE" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/"
           cp "$RUNNER_TEMP/ot-nhs/README.md" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/"
 
@@ -50,7 +46,7 @@ jobs:
           # Temporary rl-ecp source relay
 
           - Octaflick/octa_poljack: CC0 1.0 male jacket base.
-          - OTDesigns/ot-NHS: GPL-3.0 female professional shirt base.
+          - OTDesigns/ot-NHS: GPL-3.0 female professional shirt, trousers and cap bases.
 
           The upstream license and README files are included unchanged.
           EOF
@@ -65,7 +61,7 @@ jobs:
       - name: Upload binary relay artifact
         uses: actions/upload-artifact@v4
         with:
-          name: rl-ecp-open-bases
+          name: rl-ecp-open-bases-full
           path: ${{ runner.temp }}/rl-ecp-open-bases.tar.gz
           retention-days: 1
           compression-level: 0
@@ -77,5 +73,5 @@ jobs:
           git config user.name "Temporary rl-ecp relay"
           git config user.email "actions@users.noreply.github.com"
           git add -- tmp/rl-ecp-relay
-          git commit -m "chore: stage temporary rl-ecp source relay with run id"
+          git commit -m "chore: stage expanded temporary rl-ecp source relay"
           git push origin HEAD:tmp-rl-ecp-relay-20260820
