@@ -1,0 +1,72 @@
+name: Temporary rl-ecp public asset relay
+
+on:
+  push:
+    branches:
+      - tmp-rl-ecp-relay-20260820
+    paths:
+      - .github/workflows/rl-ecp-public-relay.yml
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout relay branch
+        uses: actions/checkout@v4
+        with:
+          ref: tmp-rl-ecp-relay-20260820
+
+      - name: Collect open-source wearable bases
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/rl-ecp-open-bases" tmp/rl-ecp-relay
+          mkdir -p "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/stream"
+          mkdir -p "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib"
+
+          git clone --depth 1 https://github.com/Octaflick/octa_poljack.git "$RUNNER_TEMP/octa_poljack"
+          cp "$RUNNER_TEMP/octa_poljack/fxmanifest.lua" "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/"
+          cp "$RUNNER_TEMP/octa_poljack/mp_m_freemode_01_octapol.meta" "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/"
+          cp "$RUNNER_TEMP/octa_poljack/stream/mp_m_freemode_01_octapol.ymt" "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/stream/"
+          cp "$RUNNER_TEMP/octa_poljack/stream/mp_m_freemode_01_octapol^jbib_000_u.ydd" "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/stream/"
+          cp "$RUNNER_TEMP/octa_poljack/stream/mp_m_freemode_01_octapol^jbib_diff_000_a_uni.ytd" "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/stream/"
+          cp "$RUNNER_TEMP/octa_poljack/LICENSE" "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/"
+          cp "$RUNNER_TEMP/octa_poljack/README.md" "$RUNNER_TEMP/rl-ecp-open-bases/octa_poljack/"
+
+          git clone --depth 1 https://github.com/OTDesigns/ot-NHS.git "$RUNNER_TEMP/ot-nhs"
+          cp "$RUNNER_TEMP/ot-nhs/nhs/fxmanifest.lua" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/"
+          cp "$RUNNER_TEMP/ot-nhs/nhs/mp_f_freemode_01_mp_f_eup.meta" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/"
+          cp "$RUNNER_TEMP/ot-nhs/nhs/stream/mp_f_freemode_01_mp_f_eup.ymt" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/stream/"
+          cp "$RUNNER_TEMP/ot-nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib/mp_f_freemode_01_mp_f_eup^jbib_000_u.ydd" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib/"
+          cp "$RUNNER_TEMP/ot-nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib/mp_f_freemode_01_mp_f_eup^jbib_diff_000_a_uni.ytd" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/nhs/stream/mp_f_freemode_01_mp_f_eup/jbib/"
+          cp "$RUNNER_TEMP/ot-nhs/LICENSE" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/"
+          cp "$RUNNER_TEMP/ot-nhs/README.md" "$RUNNER_TEMP/rl-ecp-open-bases/ot_nhs/"
+
+          cat > "$RUNNER_TEMP/rl-ecp-open-bases/SOURCES.md" <<'EOF'
+          # Temporary rl-ecp source relay
+
+          - Octaflick/octa_poljack: CC0 1.0 male jacket base.
+          - OTDesigns/ot-NHS: GPL-3.0 female professional shirt base.
+
+          The upstream license and README files are included unchanged.
+          EOF
+
+          mkdir -p tmp/rl-ecp-relay
+          tar -C "$RUNNER_TEMP" -czf "$RUNNER_TEMP/rl-ecp-open-bases.tar.gz" rl-ecp-open-bases
+          base64 "$RUNNER_TEMP/rl-ecp-open-bases.tar.gz" > tmp/rl-ecp-relay/open-bases.tar.gz.b64
+          sha256sum "$RUNNER_TEMP/rl-ecp-open-bases.tar.gz" | awk '{print $1}' > tmp/rl-ecp-relay/open-bases.tar.gz.sha256
+          stat -c '%s' "$RUNNER_TEMP/rl-ecp-open-bases.tar.gz" > tmp/rl-ecp-relay/open-bases.tar.gz.bytes
+
+      - name: Commit relay text
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Temporary rl-ecp relay"
+          git config user.email "actions@users.noreply.github.com"
+          git add -- tmp/rl-ecp-relay
+          git commit -m "chore: stage temporary rl-ecp source relay"
+          git push origin HEAD:tmp-rl-ecp-relay-20260820
